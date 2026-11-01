@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Aplikasi Web Manajemen SiParkir Sederhana." />
+  <title>SiParkir — Manajemen Parkir</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true"><i class="fa-solid fa-square-parking"></i></div>
+        <div class="brand-text">
+          <h1>SiParkir</h1>
+          <p>Sistem Manajemen Parkir Kendaraan</p>
+        </div>
+      </div>
+      <div class="clock-pill"><i class="fa-regular fa-clock" aria-hidden="true"></i><span id="clock">--:--</span></div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" aria-label="Menu Aplikasi">
+      <button class="nav-btn active" data-tab="tab-kendaraan"><i class="fa-solid fa-car-side"></i><span>Transaksi</span></button>
+      <button class="nav-btn" data-tab="tab-tarif"><i class="fa-solid fa-tags"></i><span>Tarif</span></button>
+      <button class="nav-btn" data-tab="tab-area"><i class="fa-solid fa-map-location-dot"></i><span>Area</span></button>
+      <button class="nav-btn" data-tab="tab-laporan"><i class="fa-solid fa-chart-line"></i><span>Laporan</span></button>
+    </nav>
+
+    <!-- TAB 1: Transaksi Parkir (Default) -->
+    <section id="tab-kendaraan" class="tab-section active">
+      <div class="stats-grid" aria-label="Ringkasan parkir">
+        <article class="stat-card stat-blue">
+          <div class="stat-info"><div class="stat-label">Sedang Parkir</div><div class="stat-val" id="statAktif">0</div></div>
+          <div class="stat-icon"><i class="fa-solid fa-car-side"></i></div>
+        </article>
+        <article class="stat-card stat-green">
+          <div class="stat-info"><div class="stat-label">Sudah Keluar</div><div class="stat-val" id="statSelesai">0</div></div>
+          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+        </article>
+        <article class="stat-card stat-amber">
+          <div class="stat-info"><div class="stat-label">Total Pendapatan</div><div class="stat-val" id="statPendapatan">Rp 0</div></div>
+          <div class="stat-icon"><i class="fa-solid fa-wallet"></i></div>
+        </article>
+        <article class="stat-card stat-slate">
+          <div class="stat-info"><div class="stat-label">Total Transaksi</div><div class="stat-val" id="statTotal">0</div></div>
+          <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+        </article>
+      </div>
+
+      <div class="main-layout">
+        <aside class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-ticket"></i> Tiket Masuk</h2></div>
+          <form id="formParkir">
+            <div class="form-group">
+              <label for="plat">Plat Nomor Kendaraan</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-car"></i><input class="input-plate" type="text" id="plat" placeholder="B 1234 XYZ" autocomplete="off" required /></div>
+            </div>
+            <div class="form-group">
+              <label for="jenis">Jenis Kendaraan</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-truck-pickup"></i><select id="jenis"></select></div>
+            </div>
+            <div class="form-group">
+              <label for="area">Area Parkir</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-location-dot"></i><select id="area"></select></div>
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Catat Kendaraan Masuk</button>
+          </form>
+        </aside>
+
+        <div class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-list-ul"></i> Data Transaksi Parkir</h2></div>
+          <div class="toolbar">
+            <input class="search-box" type="search" id="cariKendaraan" placeholder="Cari plat atau area..." />
+            <select id="filterStatus">
+              <option value="ALL">Semua Status</option>
+              <option value="Parkir">Sedang Parkir</option>
+              <option value="Selesai">Sudah Keluar</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Plat</th><th>Jenis</th><th>Area</th><th>Waktu</th><th>Tarif</th><th>Status</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="tabelKendaraan"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagKendaraan"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Tarif Parkir -->
+    <section id="tab-tarif" class="tab-section">
+      <div class="main-layout">
+        <aside class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-tags"></i> Tambah Tarif</h2></div>
+          <form id="formTarif">
+            <div class="form-group">
+              <label for="tarifJenis">Jenis Kendaraan</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-car-side"></i><input type="text" id="tarifJenis" placeholder="Cth: Sepeda Listrik" required /></div>
+            </div>
+            <div class="form-group">
+              <label for="tarifBiaya">Biaya Flat (Rp)</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-money-bill"></i><input type="number" id="tarifBiaya" min="500" step="500" placeholder="2000" required /></div>
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Simpan Tarif</button>
+          </form>
+        </aside>
+
+        <div class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-table-list"></i> Daftar Tarif Kendaraan</h2></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>No</th><th>Jenis Kendaraan</th><th>Tarif Flat</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="tabelTarif"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagTarif"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Area Parkir -->
+    <section id="tab-area" class="tab-section">
+      <div class="main-layout">
+        <aside class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-map-location-dot"></i> Tambah Area</h2></div>
+          <form id="formArea">
+            <div class="form-group">
+              <label for="areaNama">Nama / Kode Area</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-font"></i><input type="text" id="areaNama" placeholder="Cth: Blok D (Timur)" required /></div>
+            </div>
+            <div class="form-group">
+              <label for="areaKapasitas">Kapasitas Slot</label>
+              <div class="input-icon-wrap"><i class="fa-solid fa-boxes-stacked"></i><input type="number" id="areaKapasitas" min="1" placeholder="25" required /></div>
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Simpan Area</button>
+          </form>
+        </aside>
+
+        <div class="panel">
+          <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-warehouse"></i> Daftar Area Parkir</h2></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>No</th><th>Area Parkir</th><th>Kapasitas</th><th>Aksi</th></tr>
+              </thead>
+              <tbody id="tabelArea"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="pagArea"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Laporan Keuangan -->
+    <section id="tab-laporan" class="tab-section">
+      <div class="panel">
+        <div class="panel-header"><h2 class="panel-title"><i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan Parkir</h2></div>
+        
+        <div class="toolbar">
+          <div class="date-field">
+            <label for="tglMulai">Tanggal Mulai</label>
+            <input type="date" id="tglMulai" />
+          </div>
+          <div class="date-field">
+            <label for="tglSelesai">Tanggal Selesai</label>
+            <input type="date" id="tglSelesai" />
+          </div>
+          <button class="btn btn-primary" id="btnFilterLaporan" type="button" style="width: auto; height: 38px;"><i class="fa-solid fa-filter"></i> Terapkan Filter</button>
+          <button class="btn btn-out" id="btnResetLaporan" type="button" style="width: auto; height: 38px;"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+        </div>
+
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 16px;">
+          <article class="stat-card stat-amber">
+            <div class="stat-info"><div class="stat-label">Total Pemasukan (Sesuai Filter)</div><div class="stat-val" id="lapTotalPendapatan">Rp 0</div></div>
+            <div class="stat-icon"><i class="fa-solid fa-coins"></i></div>
+          </article>
+          <article class="stat-card stat-blue">
+            <div class="stat-info"><div class="stat-label">Jumlah Transaksi</div><div class="stat-val" id="lapTotalTransaksi">0</div></div>
+            <div class="stat-icon"><i class="fa-solid fa-receipt"></i></div>
+          </article>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Tanggal</th><th>Plat</th><th>Jenis</th><th>Area</th><th>Status</th><th>Tarif Masuk</th></tr>
+            </thead>
+            <tbody id="tabelLaporan"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagLaporan"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // ponytail: data statis disimpan di memori front-end; sambungkan ke REST API Node.js di tahap berikutnya.
+    const PAGE_SIZE = 5;
+
+    // Master Data
+    let tarifList = [
+      { id: 1, jenis: 'Motor', biaya: 2000 },
+      { id: 2, jenis: 'Mobil', biaya: 5000 },
+      { id: 3, jenis: 'Truk / Box', biaya: 10000 }
+    ];
+
+    let areaList = [
+      { id: 1, nama: 'Blok A (Depan)', kapasitas: 30 },
+      { id: 2, nama: 'Blok B (Tengah)', kapasitas: 40 },
+      { id: 3, nama: 'Blok C (Basement)', kapasitas: 20 }
+    ];
+
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+    let transaksiList = [
+      { id: 1, plat: 'B 4512 KLP', jenis: 'Mobil', area: 'Blok A (Depan)', tanggal: today, waktu: '08:15', tarif: 5000, status: 'Parkir' },
+      { id: 2, plat: 'D 6721 UY', jenis: 'Motor', area: 'Blok B (Tengah)', tanggal: today, waktu: '08:40', tarif: 2000, status: 'Parkir' },
+      { id: 3, plat: 'B 9011 TGH', jenis: 'Mobil', area: 'Blok C (Basement)', tanggal: today, waktu: '07:30', tarif: 5000, status: 'Selesai' },
+      { id: 4, plat: 'B 1122 AA', jenis: 'Motor', area: 'Blok B (Tengah)', tanggal: yesterday, waktu: '10:00', tarif: 2000, status: 'Selesai' },
+      { id: 5, plat: 'B 3344 BB', jenis: 'Mobil', area: 'Blok A (Depan)', tanggal: yesterday, waktu: '11:15', tarif: 5000, status: 'Selesai' },
+      { id: 6, plat: 'F 5566 CC', jenis: 'Truk / Box', area: 'Blok C (Basement)', tanggal: yesterday, waktu: '13:00', tarif: 10000, status: 'Selesai' }
+    ];
+
+    // State pagination tiap menu
+    const pages = { kendaraan: 1, tarif: 1, area: 1, laporan: 1 };
+
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+
+    // Navigation Tabs
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        $(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Populate Select options
+    function syncSelects() {
+      $('jenis').innerHTML = tarifList.map(t => `<option value="${esc(t.jenis)}" data-tarif="${t.biaya}">${esc(t.jenis)} — Rp ${t.biaya.toLocaleString('id-ID')}</option>`).join('');
+      $('area').innerHTML = areaList.map(a => `<option value="${esc(a.nama)}">${esc(a.nama)}</option>`).join('');
+    }
+
+    // Helper Pagination Builder
+    function renderPagination(containerId, totalItems, currentPage, onPageChange) {
+      const container = $(containerId);
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+      const start = totalItems === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+      const end = Math.min(currentPage * PAGE_SIZE, totalItems);
+
+      let buttons = '';
+      for (let i = 1; i <= totalPages; i++) {
+        buttons += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-p="${i}">${i}</button>`;
+      }
+
+      container.innerHTML = `
+        <div class="page-info">Menampilkan ${start} - ${end} dari ${totalItems} data</div>
+        <div class="page-controls">
+          <button class="page-btn" id="${containerId}-prev" ${currentPage <= 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>
+          ${buttons}
+          <button class="page-btn" id="${containerId}-next" ${currentPage >= totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+      `;
+
+      container.querySelectorAll('.page-btn[data-p]').forEach(b => {
+        b.onclick = () => onPageChange(Number(b.dataset.p));
+      });
+      const prev = $(`${containerId}-prev`);
+      const next = $(`${containerId}-next`);
+      if (prev) prev.onclick = () => onPageChange(currentPage - 1);
+      if (next) next.onclick = () => onPageChange(currentPage + 1);
+    }
+
+    // 1. Render Transaksi Parkir
+    function renderKendaraan() {
+      const q = $('cariKendaraan').value.trim().toLowerCase();
+      const st = $('filterStatus').value;
+
+      const filtered = transaksiList.filter(t =>
+        (t.plat.toLowerCase().includes(q) || t.area.toLowerCase().includes(q)) &&
+        (st === 'ALL' || t.status === st)
+      );
+
+      const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+      if (pages.kendaraan > totalPages) pages.kendaraan = totalPages;
+
+      const offset = (pages.kendaraan - 1) * PAGE_SIZE;
+      const pageData = filtered.slice(offset, offset + PAGE_SIZE);
+
+      $('tabelKendaraan').innerHTML = pageData.length ? pageData.map(t => `
+        <tr>
+          <td data-label="Plat"><span class="plate-badge">${esc(t.plat)}</span></td>
+          <td data-label="Jenis">${esc(t.jenis)}</td>
+          <td data-label="Area">${esc(t.area)}</td>
+          <td data-label="Waktu">${esc(t.waktu)}</td>
+          <td data-label="Tarif">Rp ${t.tarif.toLocaleString('id-ID')}</td>
+          <td data-label="Status"><span class="badge ${t.status === 'Parkir' ? 'badge-parkir' : 'badge-selesai'}">${t.status}</span></td>
+          <td data-label="Aksi">
+            <div class="actions">
+              ${t.status === 'Parkir' ? `<button class="btn btn-sm btn-out" onclick="keluarKendaraan(${t.id})" title="Keluar"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>` : ''}
+              <button class="btn btn-sm btn-del" onclick="hapusKendaraan(${t.id})" title="Hapus"><i class="fa-regular fa-trash-can"></i></button>
+            </div>
+          </td>
+        </tr>
+      `).join('') : `<tr><td colspan="7"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i>Tidak ada transaksi parkir.</div></td></tr>`;
+
+      renderPagination('pagKendaraan', filtered.length, pages.kendaraan, (p) => { pages.kendaraan = p; renderKendaraan(); });
+
+      const aktif = transaksiList.filter(t => t.status === 'Parkir').length;
+      $('statAktif').textContent = aktif;
+      $('statSelesai').textContent = transaksiList.length - aktif;
+      $('statPendapatan').textContent = 'Rp ' + transaksiList.reduce((sum, t) => sum + t.tarif, 0).toLocaleString('id-ID');
+      $('statTotal').textContent = transaksiList.length;
+    }
+
+    // 2. Render Tarif
+    function renderTarif() {
+      const totalPages = Math.ceil(tarifList.length / PAGE_SIZE) || 1;
+      if (pages.tarif > totalPages) pages.tarif = totalPages;
+
+      const offset = (pages.tarif - 1) * PAGE_SIZE;
+      const pageData = tarifList.slice(offset, offset + PAGE_SIZE);
+
+      $('tabelTarif').innerHTML = pageData.length ? pageData.map((t, idx) => `
+        <tr>
+          <td data-label="No">${offset + idx + 1}</td>
+          <td data-label="Jenis"><strong>${esc(t.jenis)}</strong></td>
+          <td data-label="Tarif Flat">Rp ${t.biaya.toLocaleString('id-ID')}</td>
+          <td data-label="Aksi"><button class="btn btn-sm btn-del" onclick="hapusTarif(${t.id})"><i class="fa-regular fa-trash-can"></i> Hapus</button></td>
+        </tr>
+      `).join('') : `<tr><td colspan="4"><div class="empty-state">Belum ada tarif.</div></td></tr>`;
+
+      renderPagination('pagTarif', tarifList.length, pages.tarif, (p) => { pages.tarif = p; renderTarif(); });
+    }
+
+    // 3. Render Area
+    function renderArea() {
+      const totalPages = Math.ceil(areaList.length / PAGE_SIZE) || 1;
+      if (pages.area > totalPages) pages.area = totalPages;
+
+      const offset = (pages.area - 1) * PAGE_SIZE;
+      const pageData = areaList.slice(offset, offset + PAGE_SIZE);
+
+      $('tabelArea').innerHTML = pageData.length ? pageData.map((a, idx) => `
+        <tr>
+          <td data-label="No">${offset + idx + 1}</td>
+          <td data-label="Area Parkir"><strong>${esc(a.nama)}</strong></td>
+          <td data-label="Kapasitas">${a.kapasitas} Slot</td>
+          <td data-label="Aksi"><button class="btn btn-sm btn-del" onclick="hapusArea(${a.id})"><i class="fa-regular fa-trash-can"></i> Hapus</button></td>
+        </tr>
+      `).join('') : `<tr><td colspan="4"><div class="empty-state">Belum ada area.</div></td></tr>`;
+
+      renderPagination('pagArea', areaList.length, pages.area, (p) => { pages.area = p; renderArea(); });
+    }
+
+    // 4. Render Laporan Keuangan
+    function renderLaporan() {
+      const mulai = $('tglMulai').value;
+      const selesai = $('tglSelesai').value;
+
+      const filtered = transaksiList.filter(t => {
+        if (mulai && t.tanggal < mulai) return false;
+        if (selesai && t.tanggal > selesai) return false;
+        return true;
+      });
+
+      const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
+      if (pages.laporan > totalPages) pages.laporan = totalPages;
+
+      const offset = (pages.laporan - 1) * PAGE_SIZE;
+      const pageData = filtered.slice(offset, offset + PAGE_SIZE);
+
+      $('tabelLaporan').innerHTML = pageData.length ? pageData.map(t => `
+        <tr>
+          <td data-label="Tanggal">${esc(t.tanggal)} ${esc(t.waktu)}</td>
+          <td data-label="Plat"><span class="plate-badge">${esc(t.plat)}</span></td>
+          <td data-label="Jenis">${esc(t.jenis)}</td>
+          <td data-label="Area">${esc(t.area)}</td>
+          <td data-label="Status"><span class="badge ${t.status === 'Parkir' ? 'badge-parkir' : 'badge-selesai'}">${t.status}</span></td>
+          <td data-label="Tarif">Rp ${t.tarif.toLocaleString('id-ID')}</td>
+        </tr>
+      `).join('') : `<tr><td colspan="6"><div class="empty-state">Tidak ada transaksi pada rentang tanggal tersebut.</div></td></tr>`;
+
+      renderPagination('pagLaporan', filtered.length, pages.laporan, (p) => { pages.laporan = p; renderLaporan(); });
+
+      const totalRp = filtered.reduce((sum, t) => sum + t.tarif, 0);
+      $('lapTotalPendapatan').textContent = 'Rp ' + totalRp.toLocaleString('id-ID');
+      $('lapTotalTransaksi').textContent = filtered.length;
+    }
+
+    // Event Handlers
+    $('formParkir').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const plat = $('plat').value.trim().toUpperCase();
+      if (!plat) return;
+      if (transaksiList.some(t => t.plat === plat && t.status === 'Parkir')) {
+        alert('Kendaraan dengan plat ini masih berstatus parkir!');
+        return;
+      }
+      const sel = $('jenis');
+      const tarif = Number(sel.options[sel.selectedIndex].dataset.tarif);
+      transaksiList.unshift({
+        id: Date.now(),
+        plat,
+        jenis: sel.value,
+        area: $('area').value,
+        tanggal: new Date().toISOString().slice(0, 10),
+        waktu: new Date().toTimeString().slice(0, 5),
+        tarif,
+        status: 'Parkir'
+      });
+      $('plat').value = '';
+      pages.kendaraan = 1;
+      renderKendaraan();
+      renderLaporan();
+    });
+
+    $('formTarif').addEventListener('submit', (e) => {
+      e.preventDefault();
+      tarifList.push({
+        id: Date.now(),
+        jenis: $('tarifJenis').value.trim(),
+        biaya: Number($('tarifBiaya').value)
+      });
+      $('tarifJenis').value = '';
+      $('tarifBiaya').value = '';
+      syncSelects();
+      renderTarif();
+    });
+
+    $('formArea').addEventListener('submit', (e) => {
+      e.preventDefault();
+      areaList.push({
+        id: Date.now(),
+        nama: $('areaNama').value.trim(),
+        kapasitas: Number($('areaKapasitas').value)
+      });
+      $('areaNama').value = '';
+      $('areaKapasitas').value = '';
+      syncSelects();
+      renderArea();
+    });
+
+    window.keluarKendaraan = (id) => {
+      const item = transaksiList.find(t => t.id === id);
+      if (item) { item.status = 'Selesai'; renderKendaraan(); renderLaporan(); }
+    };
+
+    window.hapusKendaraan = (id) => {
+      if (!confirm('Hapus transaksi ini?')) return;
+      transaksiList = transaksiList.filter(t => t.id !== id);
+      renderKendaraan();
+      renderLaporan();
+    };
+
+    window.hapusTarif = (id) => {
+      if (tarifList.length <= 1) return alert('Minimal harus ada 1 jenis tarif.');
+      tarifList = tarifList.filter(t => t.id !== id);
+      syncSelects();
+      renderTarif();
+    };
+
+    window.hapusArea = (id) => {
+      if (areaList.length <= 1) return alert('Minimal harus ada 1 area parkir.');
+      areaList = areaList.filter(a => a.id !== id);
+      syncSelects();
+      renderArea();
+    };
+
+    $('cariKendaraan').addEventListener('input', () => { pages.kendaraan = 1; renderKendaraan(); });
+    $('filterStatus').addEventListener('change', () => { pages.kendaraan = 1; renderKendaraan(); });
+
+    $('btnFilterLaporan').onclick = () => { pages.laporan = 1; renderLaporan(); };
+    $('btnResetLaporan').onclick = () => {
+      $('tglMulai').value = '';
+      $('tglSelesai').value = '';
+      pages.laporan = 1;
+      renderLaporan();
+    };
+
+    function updateClock() {
+      $('clock').textContent = new Date().toLocaleString('id-ID', {
+        weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+      });
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Initial load
+    syncSelects();
+    renderKendaraan();
+    renderTarif();
+    renderArea();
+    renderLaporan();
+  </script>
+</body>
+</html>
