@@ -13,4 +13,4 @@ Aplikasi manajemen parkir untuk mencatat kendaraan masuk dan keluar serta mengel
 
 1. Keane Hebert — 231121320
 2. Steven Wijaya — 231120674
-3. Keane Hebert — 231121320
+3. Reinaldo Ebert Winata — 231120270

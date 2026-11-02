@@ -181,3 +181,9 @@ http://localhost:3000
   "error": "Kendaraan dengan plat ini masih berstatus Parkir"
 }
 ```
+
+## Anggota Kelompok
+
+1. Keane Hebert — 231121320
+2. Steven Wijaya — 231120674
+3. Reinaldo Ebert Winata — 231120270
