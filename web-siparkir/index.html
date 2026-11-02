@@ -506,6 +506,13 @@
     renderTarif();
     renderArea();
     renderLaporan();
+
+    // Auto-select tab via URL query (?tab=tab-tarif)
+    const urlTab = new URLSearchParams(window.location.search).get('tab');
+    if (urlTab && $(urlTab)) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === urlTab));
+      document.querySelectorAll('.tab-section').forEach(s => s.classList.toggle('active', s.id === urlTab));
+    }
   </script>
 </body>
 </html>
