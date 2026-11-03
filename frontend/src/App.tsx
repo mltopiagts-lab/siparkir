@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { api } from './api';
 import { AreaTab, TarifTab } from './components/MasterTabs';
+import { TransaksiTab } from './components/TransaksiTab';
 import type { Area, Tarif } from './types';
 
-type Tab = 'tarif' | 'area';
+type Tab = 'transaksi' | 'tarif' | 'area';
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
+  { id: 'transaksi', label: 'Transaksi', icon: 'fa-solid fa-car-side' },
   { id: 'tarif', label: 'Tarif', icon: 'fa-solid fa-tags' },
   { id: 'area', label: 'Area', icon: 'fa-solid fa-map-location-dot' },
 ];
 
 function App() {
-  const [tab, setTab] = useState<Tab>('tarif');
+  const [tab, setTab] = useState<Tab>('transaksi');
   const [clock, setClock] = useState(new Date());
   const [tarifList, setTarifList] = useState<Tarif[]>([]);
   const [areaList, setAreaList] = useState<Area[]>([]);
@@ -44,24 +46,6 @@ function App() {
         <div className="clock-pill"><i className="fa-regular fa-clock" aria-hidden="true"></i><span>{clock.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span></div>
       </header>
 
-      {/* Ringkasan Master Data */}
-      <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-        <article className="stat-card stat-blue">
-          <div className="stat-info">
-            <div className="stat-label">Total Kategori Tarif</div>
-            <div className="stat-val">{tarifList.length}</div>
-          </div>
-          <div className="stat-icon"><i className="fa-solid fa-tags"></i></div>
-        </article>
-        <article className="stat-card stat-green">
-          <div className="stat-info">
-            <div className="stat-label">Total Area Parkir</div>
-            <div className="stat-val">{areaList.length}</div>
-          </div>
-          <div className="stat-icon"><i className="fa-solid fa-map-location-dot"></i></div>
-        </article>
-      </div>
-
       <nav className="nav-tabs" aria-label="Menu Aplikasi">
         {tabs.map((item) => (
           <button key={item.id} className={`nav-btn ${tab === item.id ? 'active' : ''}`} onClick={() => setTab(item.id)}>
@@ -72,6 +56,7 @@ function App() {
 
       {apiError && <div className="api-error" role="alert"><i className="fa-solid fa-triangle-exclamation"></i> API belum tersambung: {apiError}</div>}
 
+      {tab === 'transaksi' && <TransaksiTab tarifList={tarifList} areaList={areaList} />}
       {tab === 'tarif' && <TarifTab onChange={loadMasterData} />}
       {tab === 'area' && <AreaTab onChange={loadMasterData} />}
     </div>
