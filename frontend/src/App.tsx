@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { api } from './api';
+import { LaporanTab } from './components/LaporanTab';
 import { AreaTab, TarifTab } from './components/MasterTabs';
 import { TransaksiTab } from './components/TransaksiTab';
 import type { Area, Tarif } from './types';
 
-type Tab = 'transaksi' | 'tarif' | 'area';
+type Tab = 'transaksi' | 'tarif' | 'area' | 'laporan';
 
 const tabs: { id: Tab; label: string; icon: string }[] = [
   { id: 'transaksi', label: 'Transaksi', icon: 'fa-solid fa-car-side' },
   { id: 'tarif', label: 'Tarif', icon: 'fa-solid fa-tags' },
   { id: 'area', label: 'Area', icon: 'fa-solid fa-map-location-dot' },
+  { id: 'laporan', label: 'Laporan', icon: 'fa-solid fa-chart-line' },
 ];
 
 function App() {
@@ -59,6 +61,7 @@ function App() {
       {tab === 'transaksi' && <TransaksiTab tarifList={tarifList} areaList={areaList} />}
       {tab === 'tarif' && <TarifTab onChange={loadMasterData} />}
       {tab === 'area' && <AreaTab onChange={loadMasterData} />}
+      {tab === 'laporan' && <LaporanTab />}
     </div>
   );
 }

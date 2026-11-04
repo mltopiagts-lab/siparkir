@@ -1,4 +1,4 @@
-import type { ApiResponse, Area, Tarif, Transaksi } from './types';
+import type { ApiResponse, Area, LaporanStats, Tarif, Transaksi } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -20,6 +20,12 @@ export const api = {
     create: (data: Omit<Transaksi, 'id' | 'status'>) => request<Transaksi>('/transaksi', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: number, data: Partial<Transaksi>) => request<Transaksi>(`/transaksi/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     remove: (id: number) => request<void>(`/transaksi/${id}`, { method: 'DELETE' }),
+    laporan: (mulai: string, selesai: string) => {
+      const params = new URLSearchParams();
+      if (mulai) params.set('mulai', mulai);
+      if (selesai) params.set('selesai', selesai);
+      return request<LaporanStats>(`/transaksi/laporan?${params.toString()}`);
+    },
   },
   tarif: {
     list: () => request<Tarif[]>('/tarif'),
