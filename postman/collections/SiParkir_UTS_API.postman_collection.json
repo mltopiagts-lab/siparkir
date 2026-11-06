@@ -1,0 +1,293 @@
+{
+  "info": {
+    "_postman_id": "siparkir-api",
+    "name": "SiParkir",
+    "description": "Collection API SiParkir",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Cek Server",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/",
+          "host": ["{{baseUrl}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "Tarif",
+      "item": [
+        {
+          "name": "Ambil Semua Tarif",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarif",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tarif"]
+            }
+          }
+        },
+        {
+          "name": "Tambah Tarif",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jenis\": \"Sepeda Listrik\",\n  \"biaya\": 2000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarif",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tarif"]
+            }
+          }
+        },
+        {
+          "name": "Detail Tarif",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarif/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tarif", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Tarif",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jenis\": \"Motor\",\n  \"biaya\": 3000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/tarif/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tarif", "1"]
+            }
+          }
+        },
+        {
+          "name": "Hapus Tarif",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/tarif/4",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tarif", "4"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Area",
+      "item": [
+        {
+          "name": "Ambil Semua Area",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/area",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "area"]
+            }
+          }
+        },
+        {
+          "name": "Tambah Area",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Blok E (Barat)\",\n  \"kapasitas\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/area",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "area"]
+            }
+          }
+        },
+        {
+          "name": "Detail Area",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/area/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "area", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Area",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Blok A (Depan Updated)\",\n  \"kapasitas\": 35\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/area/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "area", "1"]
+            }
+          }
+        },
+        {
+          "name": "Hapus Area",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/area/4",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "area", "4"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transaksi",
+      "item": [
+        {
+          "name": "Ambil Semua Transaksi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi"]
+            }
+          }
+        },
+        {
+          "name": "Catat Kendaraan Masuk",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plat\": \"B 1234 XYZ\",\n  \"jenis\": \"Mobil\",\n  \"area\": \"Blok A (Depan)\",\n  \"tarif\": 5000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi"]
+            }
+          }
+        },
+        {
+          "name": "Detail Transaksi",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Kendaraan Keluar",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"Selesai\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi", "1"]
+            }
+          }
+        },
+        {
+          "name": "Hapus Transaksi",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Laporan",
+      "item": [
+        {
+          "name": "Laporan Semua",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi/laporan",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi", "laporan"]
+            }
+          }
+        },
+        {
+          "name": "Laporan Filter Tanggal",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transaksi/laporan?mulai=2026-01-01&selesai=2026-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transaksi", "laporan"],
+              "query": [
+                { "key": "mulai", "value": "2026-01-01" },
+                { "key": "selesai", "value": "2026-12-31" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
