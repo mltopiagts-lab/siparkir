@@ -203,7 +203,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"plat\": \"B 1234 XYZ\",\n  \"jenis\": \"Mobil\",\n  \"area\": \"Blok A (Depan)\",\n  \"tarif\": 5000\n}"
+              "raw": "{\n  \"plat\": \"B 1234 XYZ\",\n  \"id_tarif\": 2,\n  \"id_area\": 1\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/transaksi",

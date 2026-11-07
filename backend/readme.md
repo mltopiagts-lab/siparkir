@@ -145,11 +145,11 @@ http://localhost:3000
 ```json
 {
   "plat": "B 1234 XYZ",
-  "jenis": "Mobil",
-  "area": "Blok A (Depan)",
-  "tarif": 5000
+  "id_tarif": 2,
+  "id_area": 1
 }
 ```
+*Catatan: Parameter `tarif` dihitung otomatis di backend berdasarkan `id_tarif`.*
 
 **Body PUT (Keluar):**
 ```json

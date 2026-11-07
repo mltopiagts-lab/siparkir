@@ -8,8 +8,8 @@ const PAGE_SIZE = 5;
 export function TransaksiTab({ tarifList, areaList }: { tarifList: Tarif[]; areaList: Area[] }) {
   const [list, setList] = useState<Transaksi[]>([]);
   const [plat, setPlat] = useState('');
-  const [jenis, setJenis] = useState('');
-  const [area, setArea] = useState('');
+  const [idTarif, setIdTarif] = useState('');
+  const [idArea, setIdArea] = useState('');
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('ALL');
   const [page, setPage] = useState(1);
@@ -27,18 +27,20 @@ export function TransaksiTab({ tarifList, areaList }: { tarifList: Tarif[]; area
   }, []);
 
   useEffect(() => {
-    if (!jenis && tarifList[0]) setJenis(tarifList[0].jenis);
-  }, [jenis, tarifList]);
+    if (!idTarif && tarifList[0]) setIdTarif(String(tarifList[0].id));
+  }, [idTarif, tarifList]);
 
   useEffect(() => {
-    if (!area && areaList[0]) setArea(areaList[0].nama);
-  }, [area, areaList]);
+    if (!idArea && areaList[0]) setIdArea(String(areaList[0].id));
+  }, [idArea, areaList]);
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return list.filter(
       (t) =>
-        (t.plat.toLowerCase().includes(query) || t.area.toLowerCase().includes(query)) &&
+        (t.plat.toLowerCase().includes(query) ||
+          t.area.toLowerCase().includes(query) ||
+          t.jenis.toLowerCase().includes(query)) &&
         (status === 'ALL' || t.status === status),
     );
   }, [list, q, status]);
@@ -56,16 +58,14 @@ export function TransaksiTab({ tarifList, areaList }: { tarifList: Tarif[]; area
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedTarif = tarifList.find((t) => t.jenis === jenis);
     const now = new Date();
     try {
       await api.transaksi.create({
         plat: plat.trim().toUpperCase(),
-        jenis,
-        area,
+        id_tarif: Number(idTarif),
+        id_area: Number(idArea),
         tanggal: now.toISOString().slice(0, 10),
         waktu: now.toTimeString().slice(0, 5),
-        tarif: selectedTarif?.biaya ?? 0,
       });
       setPlat('');
       await load();
@@ -110,9 +110,11 @@ export function TransaksiTab({ tarifList, areaList }: { tarifList: Tarif[]; area
               <label htmlFor="jenis">Jenis Kendaraan</label>
               <div className="input-icon-wrap">
                 <i className="fa-solid fa-truck-pickup"></i>
-                <select id="jenis" value={jenis} onChange={(e) => setJenis(e.target.value)}>
+                <select id="jenis" value={idTarif} onChange={(e) => setIdTarif(e.target.value)}>
                   {tarifList.map((t) => (
-                    <option key={t.id} value={t.jenis}>{t.jenis} — Rp {Number(t.biaya).toLocaleString('id-ID')}</option>
+                    <option key={t.id} value={t.id}>
+                      {t.jenis} — Rp {Number(t.biaya).toLocaleString('id-ID')}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -121,9 +123,11 @@ export function TransaksiTab({ tarifList, areaList }: { tarifList: Tarif[]; area
               <label htmlFor="area">Area Parkir</label>
               <div className="input-icon-wrap">
                 <i className="fa-solid fa-location-dot"></i>
-                <select id="area" value={area} onChange={(e) => setArea(e.target.value)}>
+                <select id="area" value={idArea} onChange={(e) => setIdArea(e.target.value)}>
                   {areaList.map((a) => (
-                    <option key={a.id} value={a.nama}>{a.nama}</option>
+                    <option key={a.id} value={a.id}>
+                      {a.nama}
+                    </option>
                   ))}
                 </select>
               </div>

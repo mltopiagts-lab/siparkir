@@ -1,4 +1,4 @@
-import type { ApiResponse, Area, LaporanStats, Tarif, Transaksi } from './types';
+import type { ApiResponse, Area, CreateTransaksiPayload, LaporanStats, Tarif, Transaksi } from './types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -17,8 +17,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   transaksi: {
     list: (query = '') => request<Transaksi[]>(`/transaksi${query ? `?${query}` : ''}`),
-    create: (data: Omit<Transaksi, 'id' | 'status'>) => request<Transaksi>('/transaksi', { method: 'POST', body: JSON.stringify(data) }),
-    update: (id: number, data: Partial<Transaksi>) => request<Transaksi>(`/transaksi/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    create: (data: CreateTransaksiPayload) =>
+      request<Transaksi>('/transaksi', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: number, data: Partial<Transaksi>) =>
+      request<Transaksi>(`/transaksi/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     remove: (id: number) => request<void>(`/transaksi/${id}`, { method: 'DELETE' }),
     laporan: (mulai: string, selesai: string) => {
       const params = new URLSearchParams();

@@ -1,4 +1,6 @@
 const transaksiModel = require('../models/transaksiModel');
+const tarifModel = require('../models/tarifModel');
+const areaModel = require('../models/areaModel');
 
 /* =========================================================
  *  Helper: standard response biar konsisten
@@ -63,16 +65,25 @@ const getTransaksiById = async (req, res) => {
  * ========================================================= */
 const createTransaksi = async (req, res) => {
   try {
-    const { plat, jenis, area, tarif, tanggal, waktu } = req.body;
+    const { plat, id_tarif, id_area, tanggal, waktu } = req.body;
 
     if (!plat || plat.trim() === '') {
       return fail(res, 400, 'Validasi gagal', 'plat wajib diisi');
     }
-    if (!jenis || !area) {
-      return fail(res, 400, 'Validasi gagal', 'jenis dan area wajib diisi');
+    if (!id_tarif || !id_area) {
+      return fail(res, 400, 'Validasi gagal', 'id_tarif dan id_area wajib diisi');
     }
-    if (tarif === undefined || isNaN(tarif) || Number(tarif) < 0) {
-      return fail(res, 400, 'Validasi gagal', 'tarif harus berupa angka >= 0');
+
+    const [tarifRef, areaRef] = await Promise.all([
+      tarifModel.findTarifById(Number(id_tarif)),
+      areaModel.findAreaById(Number(id_area)),
+    ]);
+
+    if (!tarifRef) {
+      return fail(res, 404, 'Validasi gagal', 'id_tarif tidak ditemukan pada master tarif');
+    }
+    if (!areaRef) {
+      return fail(res, 404, 'Validasi gagal', 'id_area tidak ditemukan pada master area');
     }
 
     const cleanPlat = plat.trim().toUpperCase();
@@ -84,11 +95,11 @@ const createTransaksi = async (req, res) => {
     const now = new Date();
     const created = await transaksiModel.createTransaksi({
       plat: cleanPlat,
-      jenis: jenis.trim(),
-      area: area.trim(),
+      id_tarif: tarifRef.id,
+      id_area: areaRef.id,
       tanggal: tanggal || now.toISOString().slice(0, 10),
       waktu: waktu || now.toTimeString().slice(0, 5),
-      tarif: Number(tarif),
+      tarif: Number(tarifRef.biaya),
       status: 'Parkir',
     });
 

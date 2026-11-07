@@ -13,12 +13,22 @@ export interface Area {
 export interface Transaksi {
   id: number;
   plat: string;
+  id_tarif: number;
   jenis: string;
+  id_area: number;
   area: string;
   tanggal: string;
   waktu: string;
   tarif: number;
   status: 'Parkir' | 'Selesai';
+}
+
+export interface CreateTransaksiPayload {
+  plat: string;
+  id_tarif: number;
+  id_area: number;
+  tanggal?: string;
+  waktu?: string;
 }
 
 export interface LaporanStats {
